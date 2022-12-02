@@ -10,6 +10,7 @@ service Msg {
       rpc SendCreatePair(MsgSendCreatePair) returns (MsgSendCreatePairResponse);
   rpc SendSellOrder(MsgSendSellOrder) returns (MsgSendSellOrderResponse);
   rpc SendBuyOrder(MsgSendBuyOrder) returns (MsgSendBuyOrderResponse);
+  rpc CancelSellOrder(MsgCancelSellOrder) returns (MsgCancelSellOrderResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -50,4 +51,16 @@ message MsgSendBuyOrder {
 
 message MsgSendBuyOrderResponse {
 }
+message MsgCancelSellOrder {
+  string creator = 1;
+  string port = 2;
+  string channel = 3;
+  string amountDenom = 4;
+  string priceDenom = 5;
+  int32 orderID = 6;
+}
+
+message MsgCancelSellOrderResponse {
+}
+
 // this line is used by starport scaffolding # proto/tx/message

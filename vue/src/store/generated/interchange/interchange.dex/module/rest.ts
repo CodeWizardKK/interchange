@@ -15,6 +15,8 @@ export interface DexBuyOrderBook {
   priceDenom?: string;
 }
 
+export type DexMsgCancelSellOrderResponse = object;
+
 export type DexMsgSendBuyOrderResponse = object;
 
 export type DexMsgSendCreatePairResponse = object;
