@@ -6,17 +6,17 @@ import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "
 import { Api } from "./rest";
 import { MsgCancelBuyOrder } from "./types/dex/tx";
 import { MsgSendSellOrder } from "./types/dex/tx";
-import { MsgSendCreatePair } from "./types/dex/tx";
 import { MsgCancelSellOrder } from "./types/dex/tx";
 import { MsgSendBuyOrder } from "./types/dex/tx";
+import { MsgSendCreatePair } from "./types/dex/tx";
 
 
 const types = [
   ["/interchange.dex.MsgCancelBuyOrder", MsgCancelBuyOrder],
   ["/interchange.dex.MsgSendSellOrder", MsgSendSellOrder],
-  ["/interchange.dex.MsgSendCreatePair", MsgSendCreatePair],
   ["/interchange.dex.MsgCancelSellOrder", MsgCancelSellOrder],
   ["/interchange.dex.MsgSendBuyOrder", MsgSendBuyOrder],
+  ["/interchange.dex.MsgSendCreatePair", MsgSendCreatePair],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -51,9 +51,9 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
     msgCancelBuyOrder: (data: MsgCancelBuyOrder): EncodeObject => ({ typeUrl: "/interchange.dex.MsgCancelBuyOrder", value: MsgCancelBuyOrder.fromPartial( data ) }),
     msgSendSellOrder: (data: MsgSendSellOrder): EncodeObject => ({ typeUrl: "/interchange.dex.MsgSendSellOrder", value: MsgSendSellOrder.fromPartial( data ) }),
-    msgSendCreatePair: (data: MsgSendCreatePair): EncodeObject => ({ typeUrl: "/interchange.dex.MsgSendCreatePair", value: MsgSendCreatePair.fromPartial( data ) }),
     msgCancelSellOrder: (data: MsgCancelSellOrder): EncodeObject => ({ typeUrl: "/interchange.dex.MsgCancelSellOrder", value: MsgCancelSellOrder.fromPartial( data ) }),
     msgSendBuyOrder: (data: MsgSendBuyOrder): EncodeObject => ({ typeUrl: "/interchange.dex.MsgSendBuyOrder", value: MsgSendBuyOrder.fromPartial( data ) }),
+    msgSendCreatePair: (data: MsgSendCreatePair): EncodeObject => ({ typeUrl: "/interchange.dex.MsgSendCreatePair", value: MsgSendCreatePair.fromPartial( data ) }),
     
   };
 };
