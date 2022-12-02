@@ -15,6 +15,8 @@ export interface DexBuyOrderBook {
   priceDenom?: string;
 }
 
+export type DexMsgSendCreatePairResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */

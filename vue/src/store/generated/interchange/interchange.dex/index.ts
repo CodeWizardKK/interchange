@@ -3,11 +3,13 @@ import { txClient, queryClient, MissingWalletError , registry} from './module'
 import { BuyOrderBook } from "./module/types/dex/buy_order_book"
 import { DexPacketData } from "./module/types/dex/packet"
 import { NoData } from "./module/types/dex/packet"
+import { CreatePairPacketData } from "./module/types/dex/packet"
+import { CreatePairPacketAck } from "./module/types/dex/packet"
 import { Params } from "./module/types/dex/params"
 import { SellOrderBook } from "./module/types/dex/sell_order_book"
 
 
-export { BuyOrderBook, DexPacketData, NoData, Params, SellOrderBook };
+export { BuyOrderBook, DexPacketData, NoData, CreatePairPacketData, CreatePairPacketAck, Params, SellOrderBook };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -55,6 +57,8 @@ const getDefaultState = () => {
 						BuyOrderBook: getStructure(BuyOrderBook.fromPartial({})),
 						DexPacketData: getStructure(DexPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
+						CreatePairPacketData: getStructure(CreatePairPacketData.fromPartial({})),
+						CreatePairPacketAck: getStructure(CreatePairPacketAck.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						SellOrderBook: getStructure(SellOrderBook.fromPartial({})),
 						
@@ -267,7 +271,35 @@ export default {
 		},
 		
 		
+		async sendMsgSendCreatePair({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSendCreatePair(value)
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendCreatePair:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSendCreatePair:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		
+		async MsgSendCreatePair({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSendCreatePair(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendCreatePair:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSendCreatePair:Create Could not create message: ' + e.message)
+				}
+			}
+		},
 		
 	}
 }

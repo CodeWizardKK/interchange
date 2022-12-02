@@ -7,7 +7,19 @@ option go_package = "interchange/x/dex/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc SendCreatePair(MsgSendCreatePair) returns (MsgSendCreatePairResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
 }
 
+message MsgSendCreatePair {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+  string sourceDenom = 5;
+  string targetDenom = 6;
+}
+
+message MsgSendCreatePairResponse {
+}
 // this line is used by starport scaffolding # proto/tx/message
