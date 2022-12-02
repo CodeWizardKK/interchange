@@ -17,6 +17,8 @@ export interface DexBuyOrderBook {
 
 export type DexMsgSendCreatePairResponse = object;
 
+export type DexMsgSendSellOrderResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */
