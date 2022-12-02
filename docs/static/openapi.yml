@@ -51328,6 +51328,8 @@ definitions:
         type: string
       priceDenom:
         type: string
+  interchange.dex.MsgCancelBuyOrderResponse:
+    type: object
   interchange.dex.MsgCancelSellOrderResponse:
     type: object
   interchange.dex.MsgSendBuyOrderResponse:
