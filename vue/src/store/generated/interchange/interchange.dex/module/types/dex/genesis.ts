@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { Params } from "../dex/params";
 import { SellOrderBook } from "../dex/sell_order_book";
+import { BuyOrderBook } from "../dex/buy_order_book";
 import { Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "interchange.dex";
@@ -9,8 +10,9 @@ export const protobufPackage = "interchange.dex";
 export interface GenesisState {
   params: Params | undefined;
   port_id: string;
-  /** this line is used by starport scaffolding # genesis/proto/state */
   sellOrderBookList: SellOrderBook[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  buyOrderBookList: BuyOrderBook[];
 }
 
 const baseGenesisState: object = { port_id: "" };
@@ -26,6 +28,9 @@ export const GenesisState = {
     for (const v of message.sellOrderBookList) {
       SellOrderBook.encode(v!, writer.uint32(26).fork()).ldelim();
     }
+    for (const v of message.buyOrderBookList) {
+      BuyOrderBook.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -34,6 +39,7 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.sellOrderBookList = [];
+    message.buyOrderBookList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -48,6 +54,11 @@ export const GenesisState = {
             SellOrderBook.decode(reader, reader.uint32())
           );
           break;
+        case 4:
+          message.buyOrderBookList.push(
+            BuyOrderBook.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -59,6 +70,7 @@ export const GenesisState = {
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.sellOrderBookList = [];
+    message.buyOrderBookList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromJSON(object.params);
     } else {
@@ -77,6 +89,14 @@ export const GenesisState = {
         message.sellOrderBookList.push(SellOrderBook.fromJSON(e));
       }
     }
+    if (
+      object.buyOrderBookList !== undefined &&
+      object.buyOrderBookList !== null
+    ) {
+      for (const e of object.buyOrderBookList) {
+        message.buyOrderBookList.push(BuyOrderBook.fromJSON(e));
+      }
+    }
     return message;
   },
 
@@ -92,12 +112,20 @@ export const GenesisState = {
     } else {
       obj.sellOrderBookList = [];
     }
+    if (message.buyOrderBookList) {
+      obj.buyOrderBookList = message.buyOrderBookList.map((e) =>
+        e ? BuyOrderBook.toJSON(e) : undefined
+      );
+    } else {
+      obj.buyOrderBookList = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.sellOrderBookList = [];
+    message.buyOrderBookList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
@@ -114,6 +142,14 @@ export const GenesisState = {
     ) {
       for (const e of object.sellOrderBookList) {
         message.sellOrderBookList.push(SellOrderBook.fromPartial(e));
+      }
+    }
+    if (
+      object.buyOrderBookList !== undefined &&
+      object.buyOrderBookList !== null
+    ) {
+      for (const e of object.buyOrderBookList) {
+        message.buyOrderBookList.push(BuyOrderBook.fromPartial(e));
       }
     }
     return message;

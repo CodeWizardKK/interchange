@@ -9,10 +9,31 @@
  * ---------------------------------------------------------------
  */
 
+export interface DexBuyOrderBook {
+  index?: string;
+  amountDenom?: string;
+  priceDenom?: string;
+}
+
 /**
  * Params defines the parameters for the module.
  */
 export type DexParams = object;
+
+export interface DexQueryAllBuyOrderBookResponse {
+  buyOrderBook?: DexBuyOrderBook[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
 
 export interface DexQueryAllSellOrderBookResponse {
   sellOrderBook?: DexSellOrderBook[];
@@ -27,6 +48,10 @@ export interface DexQueryAllSellOrderBookResponse {
    *  }
    */
   pagination?: V1Beta1PageResponse;
+}
+
+export interface DexQueryGetBuyOrderBookResponse {
+  buyOrderBook?: DexBuyOrderBook;
 }
 
 export interface DexQueryGetSellOrderBookResponse {
@@ -313,10 +338,52 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title dex/genesis.proto
+ * @title dex/buy_order_book.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBuyOrderBookAll
+   * @summary Queries a list of BuyOrderBook items.
+   * @request GET:/interchange/dex/buy_order_book
+   */
+  queryBuyOrderBookAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<DexQueryAllBuyOrderBookResponse, RpcStatus>({
+      path: `/interchange/dex/buy_order_book`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryBuyOrderBook
+   * @summary Queries a BuyOrderBook by index.
+   * @request GET:/interchange/dex/buy_order_book/{index}
+   */
+  queryBuyOrderBook = (index: string, params: RequestParams = {}) =>
+    this.request<DexQueryGetBuyOrderBookResponse, RpcStatus>({
+      path: `/interchange/dex/buy_order_book/${index}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *
