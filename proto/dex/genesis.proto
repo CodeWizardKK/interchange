@@ -3,6 +3,7 @@ package interchange.dex;
 
 import "gogoproto/gogo.proto";
 import "dex/params.proto";
+import "dex/sell_order_book.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "interchange/x/dex/types";
@@ -11,5 +12,6 @@ option go_package = "interchange/x/dex/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   string port_id = 2;
+  repeated SellOrderBook sellOrderBookList = 3 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }
