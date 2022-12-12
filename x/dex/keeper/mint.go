@@ -70,7 +70,7 @@ func (k Keeper) LockTokens(ctx sdk.Context, sourcePort string, sourceChannel str
 
 // トークンがIBCバウチャートークン(ibc/....) である場合、MintTokens(トークンを受信者のアカウントに送信する)
 // それ以外の場合は、UnlockTokens(ネイティブトークンのロックを解除)
-func (k Keeper) SafeMint(ctx sdk.Context, port string, channel string, receiver sdk.AccAddress, tokens sdk.Coin, denom string, amount int32) error {
+func (k Keeper) SafeMint(ctx sdk.Context, port string, channel string, receiver sdk.AccAddress, denom string, amount int32) error {
 	//IBCバウチャートークンの場合
 	if isIBCToken(denom) {
 		//トークンを受信者のアカウントに送信する
