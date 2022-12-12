@@ -74,15 +74,16 @@ func (k Keeper) OnRecvSellOrderPacket(ctx sdk.Context, packet channeltypes.Packe
 		return packetAck, err
 	}
 
-	//売りオーダーブックを更新する
+	//指定されたdenomペアのオーダーブックが存在することを確認します。
 	pairIndex := types.OrderBookIndex(packet.SourcePort, packet.SourceChannel, data.AmountDenom, data.PriceDenom)
-	book, found := k.GetSellOrderBook(ctx, pairIndex)
+	book, found := k.GetBuyOrderBook(ctx, pairIndex)
 	//存在しなかった場合
 	if !found {
+		//ペアは存在しません
 		return packetAck, errors.New("the pair doesn't exist")
 	}
 
-	//売り注文約定
+	//売り注文約定(売りオーダーブックを更新する)
 	remaining, liquidated, gain, _ := book.FillSellOrder(types.Order{
 		Amount: data.Amount,
 		Price:  data.Price,
@@ -105,13 +106,23 @@ func (k Keeper) OnRecvSellOrderPacket(ctx sdk.Context, packet channeltypes.Packe
 	for _, liquidation := range liquidated {
 		liquidation := liquidation
 		addr, err := sdk.AccAddressFromBech32(liquidation.Creator)
-		if err = k.SafeMint(ctx, packet.DestinationPort, packet.DestinationChannel, addr, finalAmountDenom, liquidation.Amount); err != nil {
+		if err != nil {
+			return packetAck, err
+		}
+		if err = k.SafeMint(
+			ctx,
+			packet.DestinationPort,
+			packet.DestinationChannel,
+			addr,
+			finalAmountDenom,
+			liquidation.Amount,
+		); err != nil {
 			return packetAck, err
 		}
 	}
 
-	//新しいオーダーブックを保存する
-	k.SetSellOrderBook(ctx, book)
+	//新しい買いオーダーブックを保存する
+	k.SetBuyOrderBook(ctx, book)
 
 	return packetAck, nil
 }
@@ -126,7 +137,14 @@ func (k Keeper) OnAcknowledgementSellOrderPacket(ctx sdk.Context, packet channel
 		if err != nil {
 			return err
 		}
-		if err := k.SafeMint(ctx, packet.SourcePort, packet.SourceChannel, receiver, data.AmountDenom, data.Amount); err != nil {
+		if err := k.SafeMint(
+			ctx,
+			packet.SourcePort,
+			packet.SourceChannel,
+			receiver,
+			data.AmountDenom,
+			data.Amount,
+		); err != nil {
 			return err
 		}
 		return nil

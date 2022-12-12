@@ -80,7 +80,7 @@ func (s *SellOrderBook) LiquidateFromBuyOrder(order Order) (
 		liquidatedSellOrder.Amount = order.Amount
 		purchase = order.Amount
 
-		// それが完全に清算された場合、最低のアスクを削除します
+		// それが完全に清算された場合、最低価格を削除します
 		lowestAsk.Amount -= order.Amount
 		if lowestAsk.Amount == 0 {
 			s.Book.Orders = s.Book.Orders[:orderCount-1]
