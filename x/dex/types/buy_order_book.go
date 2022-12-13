@@ -9,6 +9,10 @@ func NewBuyOrderBook(AmountDenom string, PriceDenom string) BuyOrderBook {
 	}
 }
 
+func (b *BuyOrderBook) AppendOrder(creator string, amount int32, price int32) (int32, error) {
+	return b.Book.appendOrder(creator, amount, price, Decreasing)
+}
+
 // オーダーブックで買い注文を約定しようとし、すべての副作用を返します。
 func (b *BuyOrderBook) FillSellOrder(order Order) (
 	remainingSellOrder Order,
