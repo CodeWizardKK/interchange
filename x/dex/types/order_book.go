@@ -98,3 +98,24 @@ func (book *OrderBook) insertOrder(order Order, ordering Ordering) {
 		book.Orders = append(book.Orders, &order)
 	}
 }
+
+// 注文IDを元に、特定の注文を取得
+func (book OrderBook) GetOrderFromID(id int32) (Order, error) {
+	for _, order := range book.Orders {
+		if id == order.Id {
+			return *order, nil
+		}
+	}
+	return Order{}, ErrOrderNotFound
+}
+
+// 特定の注文を削除する
+func (book OrderBook) RemoveOrderFromID(id int32) error {
+	for i, order := range book.Orders {
+		if id == order.Id {
+			book.Orders = append(book.Orders[:i], book.Orders[i+1:]...)
+			return nil
+		}
+	}
+	return ErrOrderNotFound
+}
